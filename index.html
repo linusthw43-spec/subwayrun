@@ -140,7 +140,7 @@ canvas{display:block;width:100vw;height:100vh}
 // CONFIG
 // ══════════════════════════════════════════════════════════
 // !! HIER DEINE SERVER URL EINTRAGEN NACH DEM DEPLOY !!
-const SERVER_URL = 'wss://subwayrun.onrender.com';
+const SERVER_URL = 'wss://YOUR_SERVER_URL.railway.app';
 
 const LANE_X    = [-2.2, 0, 2.2];
 const COLORS    = { me: 0x00eeff, opp: 0xff4488, track: 0x1a003a, obstacle: 0xff2244, coin: 0xffd700 };
@@ -393,7 +393,7 @@ function joinRoom() {
 function startGame() {
   resetGame();
   gameRunning = true;
-  updateInterval = setInterval(sendUpdate, 100); // 10x/s
+  updateInterval = setInterval(sendUpdate, 50); // 20x/s // 10x/s
 }
 
 function endGame(data) {
@@ -412,9 +412,9 @@ function playAgain() {
 }
 
 // ── INPUT ──────────────────────────────────────────────────
-function moveLeft()  { if (!myDead && gameRunning) myLane = Math.max(0, myLane - 1); }
-function moveRight() { if (!myDead && gameRunning) myLane = Math.min(2, myLane + 1); }
-function jump()      { if (!myDead && gameRunning && !jumping) { myVY = JUMP_H; jumping = true; } }
+function moveLeft()  { if (!myDead && gameRunning) { myLane = Math.max(0, myLane - 1); sendUpdate(); } }
+function moveRight() { if (!myDead && gameRunning) { myLane = Math.min(2, myLane + 1); sendUpdate(); } }
+function jump()      { if (!myDead && gameRunning && !jumping) { myVY = JUMP_H; jumping = true; sendUpdate(); } }
 
 document.addEventListener('keydown', e => {
   if (e.code === 'ArrowLeft')  moveLeft();
@@ -525,7 +525,7 @@ function loop(ts) {
     // Opponent character
     if (ws && !oppDead) {
       const tox = LANE_X[oppLane];
-      oppChar.position.x += (tox - oppChar.position.x) * 0.15;
+      oppChar.position.x += (tox - oppChar.position.x) * 0.35;
       oppChar.position.y  = 0;
       oppChar.position.z  = myChar.position.z - 1.5; // slightly behind
     }
